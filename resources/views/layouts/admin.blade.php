@@ -2,20 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Senior Dashboard</title>
+    <title>Admin Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Bootstrap 5 CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
+    <link href="{{ asset('https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css') }}" rel="stylesheet">
     <style>
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
-
         .sidebar {
             height: 100vh;
             width: 250px;
@@ -27,24 +17,20 @@
             transition: left 0.3s ease;
             padding-top: 60px;
         }
-
         .sidebar a {
             display: block;
             color: white;
             padding: 15px;
             text-decoration: none;
         }
-
         .sidebar a:hover {
             background-color: #444;
         }
-
         .main-content {
             margin-left: 0;
             padding: 20px;
             transition: margin-left 0.3s ease;
         }
-
         .topbar {
             background-color: #0d47a1;
             color: white;
@@ -53,15 +39,12 @@
             align-items: center;
             justify-content: space-between;
         }
-
         .show-sidebar {
             left: 0;
         }
-
         .content-shift {
             margin-left: 250px;
         }
-
         .menu-btn {
             font-size: 24px;
             cursor: pointer;
@@ -72,18 +55,19 @@
 
 <div class="topbar">
     <span class="menu-btn" onclick="toggleSidebar()">☰</span>
-    <h5 class="m-0">ASSB Management System - Senior Citizen</h5>
+    <h5 class="m-0">ASSB Management System - Admin</h5>
 </div>
 
 <div id="sidebar" class="sidebar text-center">
     <img src="{{ asset('images/user-default.png') }}" alt="User Image" class="rounded-circle mt-2" width="80" height="80">
-    <h6 class="mt-2 mb-0 text-white">{{ Auth::user()->name ?? 'Senior Name' }}</h6>
-    <small class="text-white-50">Senior Citizen</small>
-    <a href="{{ url('/senior/dashboard') }}">🏠 Dashboard</a>
-    <a href="{{ url('/senior/records') }}">📋 Senior Citizen Records</a>
-    <form method="POST" action="{{ route('logout') }}" style="display:inline;">
+    <h6 class="mt-2 mb-0 text-white">{{ Auth::user()->name ?? 'ADMIN User' }}</h6>
+    <small class="text-white-50">Assistant to Individual in Crisis Situation</small>
+
+    <a href="{{ url('/admin/dashboard') }}">🏠 Dashboard</a>
+    <a href="{{ url('/admin/records') }}">📋 Admin Records</a>
+    <form method="POST" action="{{ route('logout') }}">
         @csrf
-        <button type="submit" class="btn btn-danger ms-3 mt-2">Logout</button>
+        <button type="submit" class="btn btn-danger mt-2">Logout</button>
     </form>
 </div>
 

@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SeniorCitizenController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,6 +17,13 @@ use Illuminate\Support\Facades\Route;
 */
 Route::get('/', function () {
     return redirect('/login');
+});
+
+Route::middleware(['auth'])->prefix('senior')->name('senior.')->group(function () {
+    Route::get('/records', [SeniorCitizenController::class, 'index'])->name('records.index');
+
+    Route::get('/records/create', [SeniorCitizenController::class, 'create'])->name('records.create');
+    Route::post('/records', [SeniorCitizenController::class, 'store'])->name('records.store');
 });
 
 
@@ -32,6 +40,17 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/pwd/dashboard', function () {
         return view('dashboards.pwd.index');
+    });
+});
+
+//admin
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/dashboard', function () {
+        return view('dashboards.admin.index');
+    });
+
+    Route::get('/admin/records', function () {
+        return view('dashboards.admin.records');
     });
 });
 
@@ -66,11 +85,11 @@ Route::middleware(['auth'])->group(function () {
         return view('dashboards.senior.index');
     });
 
-    Route::get('/senior/records', function () {
-        return view('dashboards.senior.records');
-    });
+//     Route::get('/senior/records', function () {
+//         return view('dashboards.senior.records.index');
+//     });
+// });
 });
-
 
 
 
