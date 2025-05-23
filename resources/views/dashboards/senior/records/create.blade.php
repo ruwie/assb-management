@@ -27,10 +27,7 @@
             <label>Date of Birth</label>
             <input type="date" name="birth_date" class="form-control" required>
         </div>
-        <div class="col-md-4 mb-3">
-            <label>Age</label>
-            <input type="number" name="age" class="form-control" min="59">
-        </div>
+        
         <div class="col-md-4 mb-3">
             <label>Place of Birth</label>
             <input type="text" name="place_of_birth" class="form-control" required>
@@ -83,14 +80,7 @@
         </div>
     </div>
 
-    <div class="mb-3">
-    <label for="gender" class="form-label">Gender</label>
-    <select class="form-select" name="gender" id="gender" required>
-        <option value="" disabled selected>Select Gender</option>
-        <option value="male">Male</option>
-        <option value="female">Female</option>
-    </select>
-</div>
+    
 
     <!-- Educational Attainment -->
     <div class="mb-3">
@@ -125,9 +115,7 @@
                     <option>Uncle</option>
                 </select>
             </div>
-            <div class="col">
-                <input type="number" name="family[0][age]" class="form-control" placeholder="Age">
-            </div>
+            
             <div class="col">
                 <input type="text" name="family[0][civil_status]" class="form-control" placeholder="Civil Status">
             </div>
@@ -167,9 +155,7 @@
                     <option>Uncle</option>
                 </select>
             </div>
-            <div class="col">
-                <input type="number" name="family[${familyIndex}][age]" class="form-control" placeholder="Age">
-            </div>
+            
             <div class="col">
                 <input type="text" name="family[${familyIndex}][civil_status]" class="form-control" placeholder="Civil Status">
             </div>

@@ -1,6 +1,20 @@
 @extends('layouts.senior')
 
 @section('content')
+<style>
+    .form-label {
+        font-weight: 600;
+    }
+
+    .form-control, .form-select {
+        font-size: 0.9rem;
+    }
+
+    .modal-body label {
+        margin-top: 5px;
+    }
+</style>
+
 <h2 class="mb-4">Senior Citizen Records</h2>
 
 <!-- Trigger Button -->
@@ -11,7 +25,8 @@
 <div class="modal fade" id="addSeniorModal" tabindex="-1" aria-labelledby="addSeniorModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-scrollable">
     <div class="modal-content">
-      <form action="{{ route('senior.records.store') }}" method="POST" enctype="multipart/form-data">
+      <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
+    <form id="seniorForm" action="{{ route('senior.records.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="modal-header">
           <h5 class="modal-title" id="addSeniorModalLabel">Add Senior Citizen</h5>
@@ -31,14 +46,17 @@
             <label class="form-label">Last Name</label>
             <input type="text" name="last_name" class="form-control" required>
           </div>
-          <div class="col-md-4">
-            <label class="form-label">Date of Birth</label>
-            <input type="date" name="birth_date" class="form-control" required>
-          </div>
-          <div class="col-md-2">
-            <label class="form-label">Age</label>
-            <input type="number" name="age" class="form-control" required>
-          </div>
+          <div class="mb-3">
+    <label for="birth_date" class="form-label">Date of Birth</label>
+    <input type="date" class="form-control" id="birth_date" name="birth_date" required>
+</div>
+
+<div class="mb-3">
+    <label for="calculated_age" class="form-label">Age</label>
+    <input type="text" class="form-control" id="calculated_age" name="age" readonly>
+</div>
+
+          
           <div class="col-md-6">
             <label class="form-label">Place of Birth</label>
             <input type="text" name="place_of_birth" class="form-control" required>
@@ -113,10 +131,7 @@
             </select>
         </div>
 
-        <div class="col-md-1">
-            <label class="form-label">Age</label>
-            <input type="number" name="family[0][age]" class="form-control" required>
-        </div>
+        
 
         <div class="col-md-2">
             <label class="form-label">Civil Status</label>
@@ -177,12 +192,38 @@ function addFamilyMember() {
   <small class="text-muted">You can upload multiple files such as valid ID, birth certificate, etc.</small>
 </div>
 
+    <!-- Profile Picture -->
+<div class="mb-3">
+    <label for="profile_picture" class="form-label">Upload Profile Picture</label>
+    <input type="file" class="form-control form-control-sm" id="profile_picture" name="profile_picture" accept="image/*">
+    <small class="text-muted">Accepted formats: JPG, PNG. Max size: 2MB.</small>
+    <div class="mt-2">
+        <img id="previewImage" src="#" alt="Preview" class="rounded border" style="display: none; max-height: 120px;">
+    </div>
+</div>
 
-        <div class="modal-footer">
+<script>
+    document.getElementById('profile_picture').onchange = function (evt) {
+        const [file] = this.files;
+        if (file) {
+            const preview = document.getElementById('previewImage');
+            preview.src = URL.createObjectURL(file);
+            preview.style.display = 'block';
+        }
+    };
+</script>
+
+
+
+
+        <div class="modal-footer mt-2">
+            <button type="button" class="btn btn-warning" onclick="clearSeniorForm()">Clear</button>
           <button type="submit" class="btn btn-primary">Save</button>
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
         </div>
       </form>
+    </div>
+
     </div>
   </div>
 </div>
@@ -209,32 +250,43 @@ function addFamilyMember() {
 
 <!-- Table of Records -->
 <table class="table table-bordered">
-    <thead class="table-dark">
+    <thead>
         <tr>
             <th>Profile</th>
             <th>Senior ID</th>
             <th>QR</th>
             <th>Name</th>
-            <th>Sex</th>
+            <th>Age</th>
             <th>Status</th>
             <th>Action</th>
         </tr>
     </thead>
     <tbody>
         @foreach($seniors as $senior)
-<tr>
-    <td><img src="{{ asset('storage/' . $senior->profile_picture) }}" width="50" height="50"></td>
-    <td>{{ $senior->senior_id }}</td>
-    <td><img src="{{ asset('storage/' . $senior->qr_code) }}" width="50" height="50"></td>
-    <td>{{ $senior->last_name }}, {{ $senior->first_name }}</td>
-    <td>{{ $senior->gender }}</td>
-    <td>{{ ucfirst($senior->status) }}</td>
-    <td>
-        <a href="#" class="btn btn-primary btn-sm">View</a>
-    </td>
-</tr>
-@endforeach
-
+            <tr>
+                <td>
+                    @if ($senior->profile_picture)
+                        <img src="{{ asset('storage/' . $senior->profile_picture) }}" width="50" height="50">
+                    @else
+                        N/A
+                    @endif
+                </td>
+                <td>{{ $senior->senior_id }}</td>
+                <td>
+                    @if ($senior->qr_code)
+                        <img src="{{ asset('storage/' . $senior->qr_code) }}" width="50" height="50">
+                    @else
+                        N/A
+                    @endif
+                </td>
+                <td>{{ $senior->last_name }}, {{ $senior->first_name }}</td>
+                <td>{{ $senior->age ?? 'N/A' }}</td>
+                <td>{{ ucfirst($senior->status) }}</td>
+                <td>
+                    <a href="#" class="btn btn-primary btn-sm">View</a>
+                </td>
+            </tr>
+        @endforeach
     </tbody>
 </table>
 
@@ -271,10 +323,7 @@ function addFamilyMember() {
                             <label>Date of Birth</label>
                             <input type="date" name="birth_date" class="form-control" required>
                         </div>
-                        <div class="col-md-2">
-                            <label>Age</label>
-                            <input type="number" name="age" class="form-control" placeholder="e.g. 65">
-                        </div>
+                        
                         <div class="col-md-6">
                             <label>Place of Birth</label>
                             <input type="text" name="place_of_birth" class="form-control" placeholder="City/Province">
@@ -356,9 +405,7 @@ function addFamilyMember() {
                                     <option>Uncle</option>
                                 </select>
                             </div>
-                            <div class="col">
-                                <input type="number" name="family[0][age]" class="form-control" placeholder="Age">
-                            </div>
+                            
                             <div class="col">
                                 <input type="text" name="family[0][civil_status]" class="form-control" placeholder="Civil Status">
                             </div>
@@ -386,25 +433,65 @@ function addFamilyMember() {
 <script>
     let familyIndex = 1;
 
-    function addFamilyMember() {
+function addFamilyMember() {
+    const container = document.getElementById('family-composition');
+    const row = `
+    <div class="row mb-2">
+        <div class="col"><input type="text" name="family[${familyIndex}][name]" class="form-control" placeholder="Name"></div>
+        <div class="col">
+            <select name="family[${familyIndex}][relationship]" class="form-control">
+                <option>Mother</option><option>Father</option><option>Son</option><option>Daughter</option>
+                <option>Friend</option><option>Grandfather</option><option>Grandmother</option>
+                <option>Auntie</option><option>Uncle</option>
+            </select>
+        </div>
+        <div class="col"><input type="text" name="family[${familyIndex}][civil_status]" class="form-control" placeholder="Civil Status"></div>
+        <div class="col"><input type="text" name="family[${familyIndex}][occupation]" class="form-control" placeholder="Occupation"></div>
+        <div class="col"><input type="text" name="family[${familyIndex}][income]" class="form-control" placeholder="Income"></div>
+    </div>`;
+    container.insertAdjacentHTML('beforeend', row);
+    familyIndex++;
+}
+
+</script>
+<script>
+    document.getElementById('birth_date').addEventListener('change', function () {
+        const birthDate = new Date(this.value);
+        const today = new Date();
+
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const m = today.getMonth() - birthDate.getMonth();
+
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+
+        document.getElementById('calculated_age').value = isNaN(age) ? '' : age;
+    });
+</script>
+
+<script>
+    function clearSeniorForm() {
+        const form = document.getElementById('seniorForm');
+
+        // Reset all fields
+        form.reset();
+
+        // Clear dynamic preview image if shown
+        const preview = document.getElementById('previewImage');
+        if (preview) {
+            preview.style.display = 'none';
+            preview.src = '#';
+        }
+
+        // Remove additional family members (keep only the first row)
         const container = document.getElementById('family-composition');
-        const row = `
-        <div class="row mb-2">
-            <div class="col"><input type="text" name="family[${familyIndex}][name]" class="form-control" placeholder="Name"></div>
-            <div class="col">
-                <select name="family[${familyIndex}][relationship]" class="form-control">
-                    <option>Mother</option><option>Father</option><option>Son</option><option>Daughter</option>
-                    <option>Friend</option><option>Grandfather</option><option>Grandmother</option>
-                    <option>Auntie</option><option>Uncle</option>
-                </select>
-            </div>
-            <div class="col"><input type="number" name="family[${familyIndex}][age]" class="form-control" placeholder="Age"></div>
-            <div class="col"><input type="text" name="family[${familyIndex}][civil_status]" class="form-control" placeholder="Civil Status"></div>
-            <div class="col"><input type="text" name="family[${familyIndex}][occupation]" class="form-control" placeholder="Occupation"></div>
-            <div class="col"><input type="text" name="family[${familyIndex}][income]" class="form-control" placeholder="Income"></div>
-        </div>`;
-        container.insertAdjacentHTML('beforeend', row);
-        familyIndex++;
+        const firstRow = container.children[0];
+        container.innerHTML = '';
+        container.appendChild(firstRow);
+        familyIndex = 1; // Reset family index
     }
 </script>
+
+
 @endsection

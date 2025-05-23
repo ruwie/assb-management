@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\SeniorCitizen;
-
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -28,13 +28,16 @@ public function create()
     return view('dashboards.senior.records.create');
 }
 
+
 public function store(Request $request)
 {
-    dd($request->all());
+    $birthDate = Carbon::parse($request->birth_date);
+$age = $birthDate->age; // Carbon will compute current age
+    // dd($request->all());
     $request->validate([
         'first_name' => 'required',
         'last_name' => 'required',
-        'gender' => 'required',
+        
         'birth_date' => 'required',
         'place_of_birth' => 'required',
         'civil_status' => 'required',
@@ -77,7 +80,7 @@ public function store(Request $request)
         'first_name' => $request->first_name,
         'middle_name' => $request->middle_name,
         'last_name' => $request->last_name,
-        'gender' => $request->gender,
+        'age' => $age,
         'status' => 'pending',
         'contact_number' => $request->contact_number,
         'profile_picture' => $path,
