@@ -163,6 +163,8 @@ return [
         /*
          * Application Service Providers...
          */
+        
+
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
@@ -172,7 +174,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Class Aliases
+    | Class Aliasespsenior
     |--------------------------------------------------------------------------
     |
     | This array of class aliases will be registered when this application
@@ -182,7 +184,8 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
-        // 'Example' => App\Facades\Example::class,
-    ])->toArray(),
+    
+])->toArray(),
+
 
 ];
