@@ -9,10 +9,6 @@ use Illuminate\Support\Str;
 
 use Intervention\Image\Facades\Image;
 
-
-
-
-
 class SeniorController extends Controller
 {
     public function index()
@@ -42,7 +38,7 @@ class SeniorController extends Controller
         \Storage::disk('public')->put('seniors/' . $filename, $resizedImage);
 
         $photoPath = $filename;
-    } else {
+    } else {    
         $photoPath = null;
     }
 
@@ -61,5 +57,31 @@ class SeniorController extends Controller
     return redirect()->route('records.senior')->with('success', 'Senior citizen added successfully.');
 }
 
+public function update(Request $request, $id)
+{
+    $senior = Senior::findOrFail($id);
+    $senior->first_name = $request->first_name;
+    $senior->middle_name = $request->middle_name;
+    $senior->last_name = $request->last_name;
+    $senior->save();
+
+    return redirect()->back()->with('success', 'Senior information updated successfully.');
 }
+
+public function destroy($id)
+{
+    $senior = Senior::findOrFail($id);
+
+    // Delete photo if exists
+    if ($senior->photo) {
+        Storage::disk('public')->delete('seniors/' . $senior->photo);
+    }
+
+    $senior->delete();
+
+    return redirect()->route('records.senior')->with('success', 'Senior record deleted successfully.');
+}
+
+}
+
 

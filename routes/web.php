@@ -35,6 +35,9 @@ Route::middleware(['auth', 'role:aics,admin'])->group(function () {
 Route::middleware(['auth', 'role:senior,admin'])->group(function () {
     Route::get('/records/senior', [SeniorController::class, 'index'])->name('records.senior');
     Route::post('/seniors/store', [SeniorController::class, 'store'])->name('senior.store');
+    Route::put('/seniors/{id}', [SeniorController::class, 'update'])->name('senior.update');
+    Route::delete('/seniors/{id}', [SeniorController::class, 'destroy'])->name('senior.destroy');
+
 });
 
 // Solo Parent Program (Solo or Admin)
