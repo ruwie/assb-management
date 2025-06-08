@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Senior;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-
+use Carbon\Carbon;
 use Intervention\Image\Facades\Image;
 
 class SeniorController extends Controller
@@ -24,6 +24,11 @@ class SeniorController extends Controller
         'first_name' => 'required|string',
         'middle_name' => 'nullable|string',
         'last_name' => 'required|string',
+        'dob' => 'required|date',
+        'age' => 'required|integer',
+        'occupation' => 'nullable|string|max:255',
+        'house_no' => 'nullable|string|max:255',
+        'barangay' => 'nullable|string|max:255',
     ]);
 
     if ($request->hasFile('photo')) {
@@ -52,10 +57,17 @@ class SeniorController extends Controller
         'first_name' => $request->first_name,
         'middle_name' => $request->middle_name,
         'last_name' => $request->last_name,
+        'dob' => $request->dob,
+        'age' => $request->age,
+        'occupation' => $request->occupation,
+        'house_no' => $request->house_no,
+        'barangay' => $request->barangay,
+        
     ]);
 
     return redirect()->route('records.senior')->with('success', 'Senior citizen added successfully.');
 }
+
 
 public function update(Request $request, $id)
 {
@@ -63,6 +75,15 @@ public function update(Request $request, $id)
     $senior->first_name = $request->first_name;
     $senior->middle_name = $request->middle_name;
     $senior->last_name = $request->last_name;
+    $senior->dob = $request->dob;
+
+    // Automatically calculate age from DOB
+    $senior->age = Carbon::parse($request->dob)->age;
+
+    $senior->occupation = $request->occupation;
+    $senior->house_no = $request->house_no; // ensure this matches input name
+    $senior->barangay = $request->barangay;
+
     $senior->save();
 
     return redirect()->back()->with('success', 'Senior information updated successfully.');

@@ -14,5 +14,10 @@ class Senior extends Model
         'first_name',
         'middle_name',
         'last_name',
+        'dob',
+        'age',
+        'occupation',
+        'house_no',
+        'barangay',
     ];
 }
